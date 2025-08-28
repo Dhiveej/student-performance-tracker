@@ -98,5 +98,10 @@ def class_statistics():
     """Calculate and display class average for each subject."""
     class_averages = db.session.query(
         Grade.subject,
-        # Correct code
         func.avg(Grade.grade).label('average_grade')
+    ).group_by(Grade.subject).all()  # <-- This part was missing
+
+    # Get distinct subjects for the topper form dropdown
+    subjects = [s.subject for s in db.session.query(Grade.subject).distinct()]
+
+    return render_template('statistics.html', averages=class_averages, subjects=subjects)

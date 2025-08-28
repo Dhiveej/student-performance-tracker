@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Tracker</title>
+</head>
+<body>
+    <h1>Student Performance Tracker</h1>
+
+    <hr>
+
+    <h2>Add a New Student</h2>
+    <form action="/add" method="post">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+        <br><br>
+        <label for="roll_number">Roll Number:</label>
+        <input type="text" id="roll_number" name="roll_number" required>
+        <br><br>
+        <button type="submit">Add Student</button>
+    </form>
+    <hr>
+
+    <h2>All Students</h2>
+    {% if students %}
+        <ul>
+            {% for student in students %}
+                 <li>
+        <a href="{{ url_for('student_details', roll_number=student['roll_number']) }}">
+            {{ student['name'] }} (Roll No: {{ student['roll_number'] }})
+        </a>
+    </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No students found. Add one to get started!</p>
+    {% endif %}
+
+</body>
+</html>

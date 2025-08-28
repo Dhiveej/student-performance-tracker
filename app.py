@@ -98,4 +98,5 @@ def class_statistics():
     """Calculate and display class average for each subject."""
     class_averages = db.session.query(
         Grade.subject,
-        func.avg(Grade.grade).label('average_grade
+        # Correct code
+        func.avg(Grade.grade).label('average_grade')

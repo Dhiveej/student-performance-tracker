@@ -2,6 +2,7 @@ import os
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
+from sqlalchemy import func # <-- ADDED FOR CALCULATIONS
 
 # Load environment variables from a .env file for local development
 load_dotenv()
@@ -90,6 +91,11 @@ def add_grade(roll_number):
             print("Invalid grade entered.")
     return redirect(url_for('student_details', roll_number=roll_number))
 
+# --- NEW BONUS FEATURE ROUTES ---
 
-if __name__ == '__main__':
-    app.run(debug=True)
+@app.route('/stats')
+def class_statistics():
+    """Calculate and display class average for each subject."""
+    class_averages = db.session.query(
+        Grade.subject,
+        func.avg(Grade.grade).label('average_grade

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Topper Result</title>
+</head>
+<body>
+    <a href="{{ url_for('class_statistics') }}">&larr; Back to Statistics</a>
+    <h1>Topper for {{ subject }}</h1>
+
+    {% if topper %}
+        <p>
+            The top performer in {{ subject }} is
+            <strong>{{ topper[0].name }}</strong>
+            with a score of <strong>{{ topper[1] }}</strong>.
+        </p>
+    {% else %}
+        <p>No students have grades for the subject: {{ subject }}.</p>
+    {% endif %}
+
+</body>
+</html>

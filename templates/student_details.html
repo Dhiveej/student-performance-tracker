@@ -2,38 +2,114 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ student.name }}'s Details</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 20px;
+            background-color: #f4f4f9;
+        }
+        .container {
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1, h2, h3 {
+            color: #0056b3;
+        }
+        a {
+            color: #0056b3;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+        }
+        li:last-child {
+            border-bottom: none;
+        }
+        form {
+            margin-top: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            border: none;
+            background-color: #0056b3;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #004494;
+        }
+    </style>
 </head>
 <body>
-    <a href="{{ url_for('index') }}">&larr; Back to Home</a>
 
-    <h1>Details for {{ student.name }}</h1>
-    <p><strong>Roll Number:</strong> {{ student.roll_number }}</p>
-    <p><strong>Average Grade:</strong> {{ "%.2f"|format(student.average) }}</p>
+    <a href="{{ url_for('index') }}">&larr; Back to All Students</a>
 
-    <hr>
+    <div class="container">
+        <h1>{{ student.name }}</h1>
+        <p><strong>Roll Number:</strong> {{ student.roll_number }}</p>
+        <p><strong>Average Grade:</strong> {{ "%.2f"|format(average) }}</p>
+    </div>
 
-    <h2>Grades</h2>
-    {% if student.grades %}
-        <ul>
-        {% for grade in student.grades %}
-            <li>{{ grade.subject }}: {{ grade.grade }}</li>
-        {% endfor %}
-        </ul>
-    {% else %}
-        <p>No grades have been added for this student yet.</p>
-    {% endif %}
+    <div class="container">
+        <h2>Grades</h2>
+        {% if student.grades %}
+            <ul>
+            {% for grade in student.grades %}
+                <li><strong>{{ grade.subject }}:</strong> {{ grade.grade }}</li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <p>No grades have been added for this student yet.</p>
+        {% endif %}
+    </div>
 
-    <hr>
-    <h3>Add a New Grade</h3>
-    <form action="{{ url_for('add_grade', roll_number=student.roll_number) }}" method="post">
-        <label for="subject">Subject:</label>
-        <input type="text" id="subject" name="subject" required>
-        <br><br>
-        <label for="grade">Grade:</label>
-        <input type="number" id="grade" name="grade" min="0" max="100" required>
-        <br><br>
-        <button type="submit">Add Grade</button>
-    </form>
+    <div class="container">
+        <h3>Add a New Grade</h3>
+        <form action="{{ url_for('add_grade', roll_number=student.roll_number) }}" method="post">
+            <div>
+                <label for="subject">Subject:</label>
+                <input type="text" id="subject" name="subject" required>
+            </div>
+            <div>
+                <label for="grade">Grade (0-100):</label>
+                <input type="number" id="grade" name="grade" min="0" max="100" required>
+            </div>
+            <button type="submit">Add Grade</button>
+        </form>
+    </div>
+
 </body>
 </html>

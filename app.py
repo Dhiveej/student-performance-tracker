@@ -2,7 +2,7 @@ import os
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
-from sqlalchemy import func # <-- ADDED FOR CALCULATIONS
+from sqlalchemy import func
 
 # Load environment variables from a .env file for local development
 load_dotenv()
@@ -10,13 +10,10 @@ load_dotenv()
 app = Flask(__name__)
 
 # --- DATABASE CONFIGURATION ---
-# Get the database URL from the environment variable.
-# Render will set this automatically. For local use, you'll create a .env file.
 db_url = os.environ.get("DATABASE_URL")
 if not db_url:
     raise ValueError("DATABASE_URL is not set.")
 
-# SQLAlchemy requires a small change to the URL for compatibility.
 if db_url.startswith("postgres://"):
     db_url = db_url.replace("postgres://", "postgresql://", 1)
 
@@ -91,6 +88,7 @@ def add_grade(roll_number):
             print("Invalid grade entered.")
     return redirect(url_for('student_details', roll_number=roll_number))
 
+
 # --- NEW BONUS FEATURE ROUTES ---
 
 @app.route('/stats')
@@ -99,9 +97,29 @@ def class_statistics():
     class_averages = db.session.query(
         Grade.subject,
         func.avg(Grade.grade).label('average_grade')
-    ).group_by(Grade.subject).all()  # <-- This part was missing
+    ).group_by(Grade.subject).all()
 
     # Get distinct subjects for the topper form dropdown
     subjects = [s.subject for s in db.session.query(Grade.subject).distinct()]
 
     return render_template('statistics.html', averages=class_averages, subjects=subjects)
+
+
+# --- ADDED THIS MISSING FUNCTION ---
+@app.route('/topper', methods=['POST'])
+def subject_topper():
+    """Find and display the top-performing student for a given subject."""
+    subject = request.form['subject']
+
+    # Query to find the student with the highest grade in the selected subject
+    topper = db.session.query(Student, Grade.grade) \
+        .join(Grade, Student.roll_number == Grade.student_roll_number) \
+        .filter(Grade.subject == subject) \
+        .order_by(Grade.grade.desc()) \
+        .first()
+
+    return render_template('topper_result.html', topper=topper, subject=subject)
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
